@@ -5,6 +5,14 @@ async function handleSubmit(event) {
     const inputValue = document.querySelector('.search-input').value;
     const searchQuery = inputValue.trim();
 
+    // Clear the any previous results
+    const searchResults = document.querySelector('.search-results');
+    searchResults.innerHTML = '';
+
+    // Add a spinner
+    const spinner = document.querySelector('.spinner');
+    spinner.classList.remove('hidden');
+
     // Try catch in case wikiSearch fails
     try {
         const results = await wikiSearch(searchQuery);
@@ -12,6 +20,8 @@ async function handleSubmit(event) {
     } catch (error) {
         console.log(error);
         alert('Wikipedia Search Failed');
+    } finally {
+        spinner.classList.add('hidden');
     }
 }
 
@@ -34,12 +44,12 @@ function displayResults(results) {
         const url = `https://en.wikipedia.org/?curid=${link.pageid}`;
 
         // Add HTML to display title, link and snippet
-        searchResults.insertAdjacentHTML('afterbegin', 
+        searchResults.insertAdjacentHTML('beforeend', 
             `<div>
                 <h2>
                     <a href="${url}" target="_blank" rel="noopener">${link.title}</a>
                 </h2>
-                <a href="${url}" target="_blank" rel="noopener">${url}</a>
+                <a href="${url}" class="result-link" target="_blank" rel="noopener">${url}</a>
                 <span>${link.snippet}</span><br>
             </div>`
         );
